@@ -1,10 +1,11 @@
 맥북 내 jdk버전을 변경하는 두가지 방법입니다.
 변경하는 빈도가 많지않으므로, 잊었을때를 대비하여 작성합니다.
+** 중요정보: jenv 사용하는편이 가장 좋습니다.
 
 아래와같은 순서로 작성합니다.
 - 일시적으로 변경하는 방법
 - 영구적으로 변경하는 방법
-
+- jenv 로 관리하는 방법
 
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 ㅡㅡㅡㅡㅡㅡ일시적으로 변경하는 방법ㅡㅡㅡㅡㅡㅡ 
@@ -49,17 +50,44 @@
 macOS에서는 일반적으로 `~/.bash_profile` 파일을 사용합니다.
 
 아래 명령어를 통하여 `~/.bash_profile` 파일에 `JAVA_HOME`을 설정하고 시스템 `PATH`에 추가할 수 있습니다. 
-> echo 'export JAVA_HOME=/path/to/jdk-11' >> ~/.bash_profile
-> echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bash_profile
+   > echo 'export JAVA_HOME=/path/to/jdk-11' >> ~/.bash_profile
+   > echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bash_profile
 
 여기서 `/path/to/jdk-11`은 실제로 JDK 11이 설치된 디렉토리의 경로로 바꿔주어야 합니다. 
 이렇게 하면 `~/.bash_profile` 파일에 두 줄이 추가되어 `JAVA_HOME`이 영구적으로 설정되고 시스템 `PATH`에 추가됩니다.
 
 이후 변경된 설정을 적용하려면 다음 명령어를 실행합니다:
-> source ~/.bash_profile
+   > source ~/.bash_profile
 
 
-이제 새로운 터미널 창을 열거나 시스템을 재부팅하면 `JAVA_HOME`이 설정된 상태로 유지됩니다.
 
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+ㅡㅡㅡㅡㅡㅡjenv 를 활용하여 변경ㅡㅡㅡㅡㅡㅡ 
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+0. jenv 미설치시 설치
+jenv 설치
+   > brew install jenv
 
+.zshrc에 추가
+   > echo 'export PATH="$HOME/.jenv/bin:$PATH"' >> ~/.zshrc
+   > echo 'eval "$(jenv init -)"' >> ~/.zshrc
+
+.zshrc 실행(활성화)
+source ~/.zshrc
+ㅡㅡㅡㅡ
+
+1. jenv에 사용할 버전 추가
+   > jenv add /Library/Java/JavaVirtualMachines/jdk-11.jdk/Contents/Home/
+
+2. jenv에 추가되어있는 리스트 확인
+   > jenv versions
+   ( 1.8 (set by /~~~~/jenv/version)  =>현재 버전이라는 뜻
+     11.0
+   ...)
+
+3. 원하는 jdk로 버전 변경
+   전역변경
+   > jenv global 11.0
+   로컬변경
+   > jenv local 11.0
 

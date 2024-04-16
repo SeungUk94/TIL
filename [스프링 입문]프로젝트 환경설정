@@ -1,0 +1,101 @@
+스프링 프로젝트를 업무진행에 관한 부분만 습득함으로 인해 지나친 중요하고 기초적인 부분을 명확히 공부하고자 정리한 포스팅입니다.
+
+# 1_ 스프링 프로젝트 환경설정
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+## 1.1 프로젝트 생성
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+start.spring.io 에서 프로젝트 생성
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+본인 : gradle-groovy
+Springboot 3.2.4
+Jar 
+Java : 17
+// dependencies :  spring web , Thymeleaf(HTML template engine)
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+inteliJ 에서 Project > build.gradle 를 먼저 열람해보면
+자바파일을 제외한 모든 파일은 리소스(resources)에 존재하고
+
+테스트코드가 존재한다.(요즘 추세)
+
+build.gradle 파일 내에 프로젝트 기본 설정파일이 존재.
+(Dependencies 는 repositories : mavenCentral 에서 자동 다운로드됨 )
+
+* 속도 팁 
+IntelliJ > Setting(preperence) > grade 검색 >. 
+Build and run using 과 Run test using 를  IntelJ 로 변경하여야 java 속도가 빠름
+
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+## 1.2 라이브러리 살펴보기
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+- 직접 작업한 내용
+build.gradle > dependencies 에 start.spring.io 에서 세팅해서 가져온 2가지와 자동세팅1개(테스트) 세가지가 있다
+ (Thymeleaf, web, test)
+
+- 현재 내용
+하지만 실제 프로젝트 라이브러리(External Library) 를 보면 굉장히 많은 라이브러리가 있다.
+
+- 사유 (다른이유)
+빌드툴(maven, gradleㅡ우리가쓰는건 그레이들ㅡ) 은 의존관계를 관리해줌
+나는 web을 디펜던시 세팅했지만, web은 tomcat, … spring core 까지 필요하기 때문에 그 라이브러리들까지 자동으로 끌고와서 등록해준다.
+> 좌하단 테두리쪽에 네모를 누르거나, 옵션 두번누르면 우상단에 코끼리모양 나오는데, 거기서 
+dependencies > compile class path 쪽 보면 방금 기술한 관계를 확인할 수 있다. (*)표시는 이미 상단에서 가져왔다는 의미.
+
+- 로그확인방법
+혼자 간단하게 개발할때는 System.out.println(“~~”); 로 사용하지만, 서버구현하고 로그를 확인할때는 log를 쓴다. 
+>라이브러리 위치경로: spring-boot-starter:3.~ > ~ logging >  
+
+- 라이브러리 소개
+ 스프링부트 라이브러리
+spring-boot-starter-webweb
+ > (tomcat, springMVC),
+spring-boot-starter
+ > (spring boot > spring core), (spring-boot-starter-logging > logbook, slf4j )
+
+- 테스트소스 라이브러리
+Spring-boot-starter-test
+ > junit(테스트 프레임워크)
+, mockito (목 라이브러리)
+, asserts (테스트코드를 조금더 편하게 작성하도록 도와주는 라이브러리)
+, spring-test (스프링 통합 테스트 지원)
+
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+## 1.3 view 환경설정
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+Src/main/resources/static/ 내에 index.html (웰컴페이지 생성)
+
+start.spring.io > Project > Spring boot > Learn > 해당버전(나는 3.2.4 의 Reference Doc. 누르고 Spring boot futures 클릭
+여기에 메뉴얼이 있어서 동작순서나 여러가지 정보를 확인할 수 있다.
+￼
+웹브라우저에서 uri 접근 > 톰캣이 /hello 로 이루어진 요청을 보고 Controller를 확인 및 알맞는 url 에 매핑을 해줌.
+( @getMapping(“hello”)…) 리턴으로 나오는 값을 viewResolver가 그것으로 화면을 찾아서 처리한다.
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+## 1.4 빌드하고 실행하기
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+* InteliJ 에서 프로젝트 중지하고 진행할것
+* 콘솔에서 프로젝트 위치로 이동
+> ./gradlew build	( 그레이들w 빌드)
+> cd build/libs	(빌드한 파일이 있는 디렉토리로 이동)
+> ls -arlth   (파일목록확인)
+> java -jar hello-spring-0.0.1-SNAPSHOT.jar (jar파일 실행)
+하면 바로 서버가 실행이된다. 현재는 서버에 위 jar파일 하나만 업로드하고 실행하면 끝난다.
+
+진행중 문제 발생시 프로젝트 위치에서 아래와같이 진행
+> ./gradlew clean  ( 빌드 파일 및 디렉토리 삭제 )
+> ls -arlth  ( 삭제된것 확인)
+> ./gradlew clean build ( 완전히 지운뒤 다시 빌드)
+
+*서버 종료는 ctrl + C
+
+
+
+

@@ -1,0 +1,86 @@
+4_1 스프링 빈과 의존관계
+컴포넌트 스캔과 자동 의존관계 설정
+
+의존성 주입 (Dependency Injection)
+방법에는 3가지가 있다.
+1. 생성자 주입
+2. 필드주입
+3. 세터(Setter)주입
+
+생성자 주입 :  가장많이쓰이고 좋은방법.
+public class MemberController{
+	private final MemberService memberService;
+
+	@Autowired
+	public MemberController(MemberService memberService){	//클래스 생성자에 주입
+		this.memberService = memberService
+	}
+}
+
+필드주입 : 선언을 한번 하면 그대로 써야해서 조금 불편할 수 있다.
+puvlic class MemberController{
+	@Autowired 
+	public MemberService memberService;
+}
+
+세터주입 : setter를 이용하여 Bean에 있는 객체까지 변형이 가능하므로 다른곳에서 문제가 생길 수 있다.
+public class MemberController{
+	private MemberService memberService;
+
+	@Autowired
+	public void setMemberService(MemberService memberService){
+		this.memberService = memberService;
+	} 
+}
+
+
+스프링 빈을 등록하는 방법은 2가지(1. 컴포넌트 스캔, 2. 자바코드로 직접 등록)
+
+1. 컴포넌트 스캔
+@Component 를 객체에 붙이면 스프링 컨테이너가 생성될 때 스프링 빈에 자동으로 생성 등록이 된다. 
+이곳에 등록된 객체는 스프링 컨테이너에서 관리되며 한번 빈에 생성한 객체를 가지고 여러곳에서 호출하여 사용할 수 있다.(싱글톤, 메모리 절약)
+(선언부)@Controller, @Service, @Repository 를 뜯어보면 모두 @Component가 들어있는것을 확인할 수 있다.
+이후 (사용부)@Autowired를 통해 빈에 생성된 객체를 이용하여 삽입해줄 수 있다.
+=> 이는 메인 @SpringBootApplication 이 있는 Java 클래스 소스 맨 위에 기술된 패키지 하위, 내부에 있는곳까지만 컴포넌트 스캔 대상이된다.
+다른 패키지에서는 @Autowired 불가(별도의 설정 필요)
+
+
+2. 자바코드로 직접 등록
+3. 메소드 선언부에 @Bean 을 추가하여 등록한다자바코드로 직접 선언
+class에 @Configuration을 붙이고 빈에 등록할 메소드에 @Bean 를 작성하면 된다. 필요한곳에@서@utowired를 하면 Bean에서 가져와서 사용할 수 있다.
+
+xml선언은 안하는 추세이므로 제외.
+
+
+ㅡ아래는 위의 내용을 한번 더 상세설명ㅡ 
+컨트롤러가 서비스를 통해서, 리포지토리를 조회할 수 있다.
+=> 컨트롤러는 서비스를 의존한다
+
+@Controller 라는 어노테이션이 있으면 …
+스프링이 컨테이너가 생성될 때, 어노테이션이 붙은 객체를 생성해서 스프링 컨테이너에 넣어두고 관리한다.
+@Service, @Repository 도 마찬가지로 스프링컨테이너 생성될 시 컨테이너에 생성되며 관리된다.
+> 이게 가능한 이유는, 각 상기 어노테이션을 들어가보면, @Component라는 어노테이션이 붙어있기 때문이다.
+ 
+예를들면,
+컨트롤러 내에 사용할 서비스를 선언 할 때, 
+
+private final MemberService = new MemberService(); 로 새롭게 선언할 수 있지만,
+
+public class MemeberController(){
+	private final MemberService memberService;
+
+	@Autowired
+	public class MemberController(MemberService memberService){ //생성자
+		this.memberService = memberService
+	}
+}
+
+간단한 기능인 클래스는 여러개의 인스턴스를 생성할 필요가 없으므로, 스프링 컨테이너가 관리하는 하나의 객체만 있어도 충분하므로
+스프링 컨테이너에 한번만 등록하고 사용하면 된다. 
+
+@Autowired 라는 어노테이션이 있으면 …
+@Controller가 붙은 클래스가 컨테이너에 생성될 때, 컨테이너가 가지고있던 @Autowired가 붙은 인스턴스를 가져다가 붙여준다.
+(컨테이너 생성될 때 만들어졌던 인스턴스들 ex) @Controller @Service, @Repository …) 
+
+
+
